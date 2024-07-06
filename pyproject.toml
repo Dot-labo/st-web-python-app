@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "st-web-python-app"
+version = "0.1.0"
+description = "python web app using streamlit and ai."
+authors = ["kato-mahiro <kato.mahiro.3@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
