@@ -1,15 +1,23 @@
 import streamlit as st
 from streamlit_ace import st_ace
-import subprocess
+import streamlit_execute as se
+import asyncio
+import time
 
-st.title("Python Code Executor")
+st.title("👩‍💻Pythonじっけんしつ 💯")
 
-# Code editor with syntax highlighting and basic autocompletion
-code = st_ace(
+if "code" not in st.session_state:
+    st.session_state["code"] = ""
+
+
+# Code editor
+writing_code = st_ace(
+    placeholder="コードを書いてね！",
+    value = "print('Hello, World!')",
     language="python",
     theme="monokai",
     keybinding="vscode",
-    font_size=24,
+    font_size=20,
     tab_size=4,
     show_gutter=True,
     wrap=True,
@@ -17,22 +25,20 @@ code = st_ace(
     readonly=False,
 )
 
-if st.button("Run"):
-    if code:
-        # Save the code to a temporary file
-        with open("temp_code.py", "w") as f:
-            f.write(code)
-        
-        # Execute the code and capture the output
-        result = subprocess.run(["python", "temp_code.py"], capture_output=True, text=True)
-        
-        # Display the output
-        st.subheader("Output:")
-        st.text(result.stdout)
-        
-        # Display errors, if any
-        if result.stderr:
-            st.subheader("Errors:")
-            st.text(result.stderr)
+if st.button("じっこう！！ 🚀"):
+    st.session_state["code"] = writing_code
+#execute code
+if st.session_state["code"] == "" or st.session_state["code"] != writing_code:
+    st.info("コードを編集中...🖊️")
+else:
+    response = se.init(writing_code)
+    if(response["status"] == "success"):
+        if(response["stdout"] == ""):
+            st.info("コードにエラーはなかったよ！でも何も表示されないプログラムだね 🤔")
+        else:
+            st.success("けっか 🎉")
+            st.code(response["stdout"], language="python", line_numbers=True)
+    elif(response["status"] == "error"):
+        st.error("コードにエラーがあったみたい！ 🐛")
     else:
-        st.warning("Please enter some Python code to run.")
+        st.info("じっこうちゅう...🐍")
